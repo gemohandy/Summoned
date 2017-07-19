@@ -120,7 +120,7 @@ function doStuff(event){
   mouse = getMouseOnCanvas(event);
   isIdle = false;
   mouse.x -= mouse.x % 5;
-  mouse.x -= 30;
+  mouse.x -= 90;
   window.clearTimeout(thingToDo);
   walk(mouse.x);
 }
