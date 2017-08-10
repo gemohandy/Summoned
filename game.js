@@ -11,26 +11,16 @@ var images = [
 ];
 
 var loadedImages = [];
+var c;
+
+//Before we do anything else, we need to make sure we have all of the assets loaded. That's what the preloader is for.
 
 function preloader(){
+  c = document.getElementById("gameBox").getContext("2d");
   for(var i in images){
     loadImage(images[i]);
   }
   isLoad();
-}
-
-var walkState = 0;
-var isIdle = true;
-var thingToDo;
-
-var impPos = 420;
-var impHeight = 180;
-var roomOffset = -300;
-
-
-function getMouseOnCanvas(event){
-  canvas = document.getElementById("gameBox");
-  return {x:event.clientX-canvas.offsetLeft-roomOffset, y:event.clientY-canvas.offsetTop};
 }
 
 function loadImage(image){
@@ -60,11 +50,44 @@ function checkLoad(){
 
 function isLoad(){
   if(checkLoad()){
-    idle();
+    drawEverything();
   }
   else{
     window.setTimeout(isLoad,250);
   }
+}
+
+//Now we can actually do stuff. We need an animation state, which everything will access
+
+var animState = 0;
+var impState = 0;
+var impDest;
+var isIdle = true;
+var thingToDo;
+
+var impPos = 420;
+var impHeight = 180;
+var roomOffset = -300;
+
+
+function getMouseOnCanvas(event){
+  canvas = document.getElementById("gameBox");
+  return {x:event.clientX-canvas.offsetLeft-roomOffset, y:event.clientY-canvas.offsetTop};
+}
+
+function drawEverything(){
+  c.setTransform(1,0,0,1,roomOffset,0);
+  backgroundDraw();
+  switch(impState){
+    case 0:
+      idle();
+      break;
+    case 1:
+      walk();
+      break;
+  }
+  animState++;
+  thingToDo = setTimeout(drawEverything, 25);
 }
 
 function backgroundDraw(){
@@ -74,53 +97,37 @@ function backgroundDraw(){
 }
 
 function idle(){
-  if(walkState < 24 || walkState > 47){
-    walkState = 24;
-  }
-  c = document.getElementById("gameBox").getContext("2d");
-  backgroundDraw();
+  walkState = 24 + animState % 24;
   image = loadedImages[walkState];
   c.drawImage(image,impPos,impHeight,image.getAttribute("width"),image.getAttribute("height"));
   walkState++;
-  thingToDo = setTimeout(idle, 25);
 }
 
-function walk(destination){
-  if(destination>impPos){
-    if(walkState < 0 || walkState > 23){
-      walkState = 0;
-    }
-    c = document.getElementById("gameBox").getContext("2d");
-    backgroundDraw();
+function walk(){
+  if(impDest>impPos){
+    walkState = animState % 24;
     image = loadedImages[walkState];
     c.drawImage(image,impPos,impHeight,image.getAttribute("width"),image.getAttribute("height"));
     walkState++;
     impPos += 5;
   }
   else{
-    if(walkState < 48 || walkState > 71){
-      walkState = 48;
-    }
-    c = document.getElementById("gameBox").getContext("2d");
-    backgroundDraw();
+    walkState = 48 + animState % 24;
     image = loadedImages[walkState];
     c.drawImage(image,impPos,impHeight,image.getAttribute("width"),image.getAttribute("height"));
     walkState++;
     impPos -= 5;
   }
-  if(impPos != destination){
-    thingToDo = setTimeout(function(){walk(destination)}, 25);
-  }
-  else{
-    idle();
+  if(impPos == impDest){
+    impState = 0;
   }
 }
 
 function doStuff(event){
   mouse = getMouseOnCanvas(event);
+  impState = 1;
   isIdle = false;
   mouse.x -= mouse.x % 5;
   mouse.x -= 90;
-  window.clearTimeout(thingToDo);
-  walk(mouse.x);
+  impDest = mouse.x;
 }
