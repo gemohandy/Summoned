@@ -2,10 +2,12 @@
 //0 to 23: Demon walking right
 //24 to 47:Demon Idle
 //48 to 71: Demon Walking Left
+//72: First Room Background
 var images = [
   {name:"art/demon/walkingRight/Demon Walk", extension:".png", upBound: 24, loaded: false, width:155, height:230},
   {name:"art/demon/idle/Demon Idle", extension:".png", upBound: 24, loaded: false, width:155, height:230},
-  {name:"art/demon/walkingLeft/Demon Walk", extension:".png", upBound: 24, loaded: false, width:155, height:230}
+  {name:"art/demon/walkingLeft/Demon Walk", extension:".png", upBound: 24, loaded: false, width:155, height:230},
+  {name:"art/rooms/firstRoom", extension:".png", upBound: 1, loaded: false, width:1200, height:400}
 ];
 
 var loadedImages = [];
@@ -21,12 +23,14 @@ var walkState = 0;
 var isIdle = true;
 var thingToDo;
 
-var impPos = 230;
+var impPos = 420;
+var impHeight = 180;
+var roomOffset = -300;
 
 
 function getMouseOnCanvas(event){
   canvas = document.getElementById("gameBox");
-  return {x:event.clientX-canvas.offsetLeft, y:event.clientY-canvas.offsetTop};
+  return {x:event.clientX-canvas.offsetLeft-roomOffset, y:event.clientY-canvas.offsetTop};
 }
 
 function loadImage(image){
@@ -63,17 +67,20 @@ function isLoad(){
   }
 }
 
+function backgroundDraw(){
+  c.setTransform(1,0,0,1,roomOffset,0);
+  image = loadedImages[72]
+  c.drawImage(image,0,0,1200,400);
+}
+
 function idle(){
   if(walkState < 24 || walkState > 47){
     walkState = 24;
   }
   c = document.getElementById("gameBox").getContext("2d");
-  c.fillStyle = "#666666";
-  c.fillRect(0,0,600,400);
-  c.fillStyle = "#663300";
-  c.fillRect(0,300,600,100);
+  backgroundDraw();
   image = loadedImages[walkState];
-  c.drawImage(image,impPos,150,image.getAttribute("width"),image.getAttribute("height"));
+  c.drawImage(image,impPos,impHeight,image.getAttribute("width"),image.getAttribute("height"));
   walkState++;
   thingToDo = setTimeout(idle, 25);
 }
@@ -84,12 +91,9 @@ function walk(destination){
       walkState = 0;
     }
     c = document.getElementById("gameBox").getContext("2d");
-    c.fillStyle = "#666666";
-    c.fillRect(0,0,600,400);
-    c.fillStyle = "#663300";
-    c.fillRect(0,300,600,100);
+    backgroundDraw();
     image = loadedImages[walkState];
-    c.drawImage(image,impPos,150,image.getAttribute("width"),image.getAttribute("height"));
+    c.drawImage(image,impPos,impHeight,image.getAttribute("width"),image.getAttribute("height"));
     walkState++;
     impPos += 5;
   }
@@ -98,12 +102,9 @@ function walk(destination){
       walkState = 48;
     }
     c = document.getElementById("gameBox").getContext("2d");
-    c.fillStyle = "#666666";
-    c.fillRect(0,0,600,400);
-    c.fillStyle = "#663300";
-    c.fillRect(0,300,600,100);
+    backgroundDraw();
     image = loadedImages[walkState];
-    c.drawImage(image,impPos,150,image.getAttribute("width"),image.getAttribute("height"));
+    c.drawImage(image,impPos,impHeight,image.getAttribute("width"),image.getAttribute("height"));
     walkState++;
     impPos -= 5;
   }
@@ -116,7 +117,6 @@ function walk(destination){
 }
 
 function doStuff(event){
-  console.log("click");
   mouse = getMouseOnCanvas(event);
   isIdle = false;
   mouse.x -= mouse.x % 5;
