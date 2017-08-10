@@ -7,7 +7,7 @@ var images = [
   {name:"art/demon/walkingRight/Demon Walk", extension:".png", upBound: 24, loaded: false, width:155, height:230},
   {name:"art/demon/idle/Demon Idle", extension:".png", upBound: 24, loaded: false, width:155, height:230},
   {name:"art/demon/walkingLeft/Demon Walk", extension:".png", upBound: 24, loaded: false, width:155, height:230},
-  {name:"art/rooms/firstRoom/firstRoom", extension:".png", upBound: 17, loaded: false, width:1200, height:400}
+  {name:"art/rooms/firstRoom/firstRoom", extension:".png", upBound: 15, loaded: false, width:1200, height:400}
 ];
 
 var loadedImages = [];
@@ -92,7 +92,7 @@ function drawEverything(){
 
 function backgroundDraw(){
   c.setTransform(1,0,0,1,roomOffset,0);
-  image = loadedImages[72+animState%17];
+  image = loadedImages[72+animState%15];
   c.drawImage(image,0,0,1200,400);
 }
 
