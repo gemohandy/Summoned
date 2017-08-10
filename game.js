@@ -7,7 +7,7 @@ var images = [
   {name:"art/demon/walkingRight/Demon Walk", extension:".png", upBound: 24, loaded: false, width:155, height:230},
   {name:"art/demon/idle/Demon Idle", extension:".png", upBound: 24, loaded: false, width:155, height:230},
   {name:"art/demon/walkingLeft/Demon Walk", extension:".png", upBound: 24, loaded: false, width:155, height:230},
-  {name:"art/rooms/firstRoom", extension:".png", upBound: 1, loaded: false, width:1200, height:400}
+  {name:"art/rooms/firstRoom/firstRoom", extension:".png", upBound: 1, loaded: false, width:1200, height:400}
 ];
 
 var loadedImages = [];
