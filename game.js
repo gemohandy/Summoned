@@ -65,10 +65,15 @@ var impDest;
 var isIdle = true;
 var thingToDo;
 
-var impPos = 420;
-var impHeight = 180;
+var impPos = {x:420, y:180,width:160,height:230,action:"moveLeft"};
+
 var roomOffset = -300;
 
+var clickables = [
+  {x:0,y:0,width:400,height:50,action:"moveLeft"},
+  {x:550,y:0,width:400,height:50,action:"moveRight"},
+  impPos
+];
 
 function getMouseOnCanvas(event){
   canvas = document.getElementById("gameBox");
@@ -92,33 +97,33 @@ function drawEverything(){
 
 function backgroundDraw(){
   c.setTransform(1,0,0,1,roomOffset,0);
-  image = loadedImages[72+animState%15];
+  image = loadedImages[72/*+animState%15*/];
   c.drawImage(image,0,0,1200,400);
 }
 
 function idle(){
   walkState = 24 + animState % 24;
   image = loadedImages[walkState];
-  c.drawImage(image,impPos,impHeight,image.getAttribute("width"),image.getAttribute("height"));
+  c.drawImage(image,impPos.x,impPos.y,image.getAttribute("width"),image.getAttribute("height"));
   walkState++;
 }
 
 function walk(){
-  if(impDest>impPos){
+  if(impDest>impPos.x){
     walkState = animState % 24;
     image = loadedImages[walkState];
-    c.drawImage(image,impPos,impHeight,image.getAttribute("width"),image.getAttribute("height"));
+    c.drawImage(image,impPos.x,impPos.y,image.getAttribute("width"),image.getAttribute("height"));
     walkState++;
-    impPos += 5;
+    impPos.x += 5;
   }
   else{
     walkState = 48 + animState % 24;
     image = loadedImages[walkState];
-    c.drawImage(image,impPos,impHeight,image.getAttribute("width"),image.getAttribute("height"));
+    c.drawImage(image,impPos.x,impPos.y,image.getAttribute("width"),image.getAttribute("height"));
     walkState++;
-    impPos -= 5;
+    impPos.x -= 5;
   }
-  if(impPos == impDest){
+  if(impPos.x == impDest){
     impState = 0;
   }
 }
@@ -128,6 +133,8 @@ function doStuff(event){
   impState = 1;
   isIdle = false;
   mouse.x -= mouse.x % 5;
+  console.log(mouse.x)
+  console.log(clickables[2].x);
   mouse.x -= 90;
   impDest = mouse.x;
 }
